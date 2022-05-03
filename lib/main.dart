@@ -79,6 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
+  _removeTransaction(String id) {
+    setState(() {
+      _transaction.removeWhere((element) => element.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // TransactionForm(
                 //   _addTransaction,
                 // ),
-                TransactionList(_transaction),
+                TransactionList(_transaction, _removeTransaction),
               ],
             ),
           ],
