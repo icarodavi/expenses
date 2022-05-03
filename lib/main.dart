@@ -16,7 +16,7 @@ class ExpensesApp extends StatelessWidget {
       home: MyHomePage(),
       theme: tema.copyWith(
           colorScheme: tema.colorScheme.copyWith(
-            primary: Colors.purple,
+            primary: Colors.purple[800],
             secondary: Colors.amber,
           ),
           textTheme: tema.textTheme.copyWith(
@@ -52,9 +52,33 @@ class _MyHomePageState extends State<MyHomePage> {
       value: 50.00,
     ),
     Transaction(
+      id: 't3',
+      title: 'Pc novo',
+      date: DateTime.now().subtract(Duration(days: 3)),
+      value: 500.00,
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Cartão',
+      date: DateTime.now(),
+      value: 1000.00,
+    ),
+    Transaction(
       id: 't2',
       title: 'Celular novo',
-      date: DateTime.now().subtract(Duration(days: 3)),
+      date: DateTime.now(),
+      value: 100.00,
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Parcela casa',
+      date: DateTime.now(),
+      value: 600.00,
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Ração',
+      date: DateTime.now(),
       value: 100.00,
     ),
   ];

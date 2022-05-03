@@ -35,44 +35,29 @@ class TransactionList extends StatelessWidget {
                 final tr = transactions[index];
 
                 return Card(
-                  elevation: 2,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.purple,
-                              width: 2,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            'R\$ ${tr.value.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.purple,
-                            ),
-                          ),
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 10,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FittedBox(
+                          child: Text('R\$ ${tr.value.toStringAsFixed(2)}'),
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              tr.title,
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            Text(
-                              DateFormat('d MMM y').format(tr.date),
-                              style: const TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                      ]),
+                      ),
+                    ),
+                    title: Text(
+                      tr.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(DateFormat('d MMM y').format(tr.date)),
+                    trailing: Text('OK'),
+                  ),
                 );
               },
             ),
