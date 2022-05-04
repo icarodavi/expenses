@@ -1,10 +1,11 @@
-import 'package:expenses/components/chart.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
-import 'dart:math';
+import '../models/transaction.dart';
+
+import 'components/chart.dart';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
-import '../models/transaction.dart';
 
 void main() => runApp(ExpensesApp());
 
@@ -17,7 +18,7 @@ class ExpensesApp extends StatelessWidget {
       home: MyHomePage(),
       theme: tema.copyWith(
           colorScheme: tema.colorScheme.copyWith(
-            primary: Colors.purple[800],
+            primary: Colors.purple[700],
             secondary: Colors.amber,
           ),
           textTheme: tema.textTheme.copyWith(
@@ -135,27 +136,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            if (_showChart || !isLandscape)
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              if (_showChart || !isLandscape)
+                Container(
+                  height: availableHeight * (isLandscape ? .45 : 0.25),
+                  child: Chart(_recentTransactions),
+                ),
               Container(
-                height: availableHeight * (isLandscape ? .45 : 0.25),
-                child: Chart(_recentTransactions),
+                height:
+                    availableHeight * ((isLandscape && !_showChart) ? 1 : .75),
+                child: TransactionList(_transaction, _removeTransaction),
               ),
-            Container(
-              height:
-                  availableHeight * ((isLandscape && !_showChart) ? 1 : .75),
-              child: TransactionList(_transaction, _removeTransaction),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
+        foregroundColor: Theme.of(context).colorScheme.primary,
         onPressed: () => _openTransactionFormModal(context),
       ),
     );
