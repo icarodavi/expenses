@@ -1,5 +1,6 @@
 import 'package:expenses/components/chart.dart';
 import 'package:flutter/material.dart';
+
 import 'dart:math';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
@@ -32,6 +33,7 @@ class ExpensesApp extends StatelessWidget {
             titleTextStyle: TextStyle(
                 fontFamily: 'OpenSans',
                 fontSize: 20,
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
           )),
     );
@@ -87,29 +89,44 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    for (var i = 0; i <= 30; i++) {
+      _transaction.add(Transaction(
+        date: DateTime.now().subtract(Duration(days: Random().nextInt(7))),
+        id: Random().nextDouble().toString(),
+        title: 'Title ${Random().nextInt(100)}',
+        value: double.parse(Random().nextInt(1000).toString()),
+      ));
+    }
+    final appBar = AppBar(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: const Text('Despesas Pessoais'),
+      actions: <Widget>[
+        IconButton(
+          onPressed: () => _openTransactionFormModal(context),
+          icon: const Icon(Icons.add),
+          color: Colors.white,
+        ),
+      ],
+    );
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text('Despesas Pessoais'),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () => _openTransactionFormModal(context),
-              icon: const Icon(Icons.add))
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            Column(
-              children: [
-                // TransactionForm(
-                //   _addTransaction,
-                // ),
-                TransactionList(_transaction, _removeTransaction),
-              ],
+            Container(
+              height: availableHeight * .25,
+              child: Chart(_recentTransactions),
+            ),
+            Container(
+              height: availableHeight * .75,
+              child: TransactionList(_transaction, _removeTransaction),
             ),
           ],
         ),
