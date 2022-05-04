@@ -49,7 +49,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transaction = [];
-  bool _showChart = true;
+  bool _showChart = false;
+  bool _ran = false;
 
   List<Transaction> get _recentTransactions {
     return _transaction.where((tr) {
@@ -88,10 +89,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  _generate() {
+    if (!_ran) {
+      for (var i = 0; i <= 10; i++) {
+        _transaction.add(Transaction(
+          date: DateTime.now().subtract(Duration(days: Random().nextInt(7))),
+          id: Random().nextDouble().toString(),
+          title: 'Title ${Random().nextInt(100)}',
+          value: double.parse(Random().nextInt(1000).toString()),
+        ));
+      }
+    }
+    _ran = true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final _mediaQuery = MediaQuery.of(context);
+    _generate();
+    bool isLandscape = _mediaQuery.orientation == Orientation.landscape;
     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     final appBar = AppBar(
@@ -113,9 +129,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
-    final availableHeight = MediaQuery.of(context).size.height -
+    final availableHeight = _mediaQuery.size.height -
         appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
+        _mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
@@ -124,19 +140,20 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            _showChart
-                ? const Text('')
-                : Container(
-                    height: availableHeight * (isLandscape ? .7 : 0.25),
-                    child: Chart(_recentTransactions),
-                  ),
+            if (_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? .45 : 0.25),
+                child: Chart(_recentTransactions),
+              ),
             Container(
-              height: availableHeight * .75,
+              height:
+                  availableHeight * ((isLandscape && !_showChart) ? 1 : .75),
               child: TransactionList(_transaction, _removeTransaction),
             ),
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => _openTransactionFormModal(context),
@@ -144,11 +161,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-// for (var i = 0; i <= 10; i++) {
-//       _transaction.add(Transaction(
-//         date: DateTime.now().subtract(Duration(days: Random().nextInt(7))),
-//         id: Random().nextDouble().toString(),
-//         title: 'Title ${Random().nextInt(100)}',
-//         value: double.parse(Random().nextInt(1000).toString()),
-//       ));
-//     }
