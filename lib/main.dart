@@ -49,6 +49,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transaction = [];
+  bool _showChart = true;
 
   List<Transaction> get _recentTransactions {
     return _transaction.where((tr) {
@@ -89,19 +90,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    for (var i = 0; i <= 30; i++) {
-      _transaction.add(Transaction(
-        date: DateTime.now().subtract(Duration(days: Random().nextInt(7))),
-        id: Random().nextDouble().toString(),
-        title: 'Title ${Random().nextInt(100)}',
-        value: double.parse(Random().nextInt(1000).toString()),
-      ));
-    }
+
     final appBar = AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: const Text('Despesas Pessoais'),
       actions: <Widget>[
+        if (isLandscape)
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _showChart = !_showChart;
+                });
+              },
+              icon: Icon(_showChart ? Icons.list : Icons.bar_chart)),
         IconButton(
           onPressed: () => _openTransactionFormModal(context),
           icon: const Icon(Icons.add),
@@ -120,10 +124,12 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              height: availableHeight * .25,
-              child: Chart(_recentTransactions),
-            ),
+            _showChart
+                ? const Text('')
+                : Container(
+                    height: availableHeight * (isLandscape ? .7 : 0.25),
+                    child: Chart(_recentTransactions),
+                  ),
             Container(
               height: availableHeight * .75,
               child: TransactionList(_transaction, _removeTransaction),
@@ -138,3 +144,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+// for (var i = 0; i <= 10; i++) {
+//       _transaction.add(Transaction(
+//         date: DateTime.now().subtract(Duration(days: Random().nextInt(7))),
+//         id: Random().nextDouble().toString(),
+//         title: 'Title ${Random().nextInt(100)}',
+//         value: double.parse(Random().nextInt(1000).toString()),
+//       ));
+//     }
